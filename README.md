@@ -9,19 +9,26 @@ Aplicacao web para organizacao academica com calendario interativo, painel de ta
 > Projeto sem framework, sem build e sem dependencias externas.  
 > Basta abrir `index.html` no navegador.
 
+## Demo e Preview
+
+- Aplicacao online: https://cronograma-academico.netlify.app/
+
+![Screenshot do sistema Academico](assets/images/aplicacao.png)
+
 ## Sumario
 
-1. [Sobre](#sobre)
-2. [Destaques](#destaques)
-3. [Arquitetura](#arquitetura)
-4. [Estrutura do Projeto](#estrutura-do-projeto)
-5. [Como Executar](#como-executar)
-6. [Persistencia Local](#persistencia-local)
-7. [Modelo de Dados](#modelo-de-dados)
-8. [UX Mobile](#ux-mobile)
-9. [Roadmap](#roadmap)
-10. [Contribuicao](#contribuicao)
-11. [Checklist de Qualidade](#checklist-de-qualidade)
+1. [Demo e Preview](#demo-e-preview)
+2. [Sobre](#sobre)
+3. [Destaques](#destaques)
+4. [Arquitetura](#arquitetura)
+5. [Estrutura do Projeto](#estrutura-do-projeto)
+6. [Como Executar](#como-executar)
+7. [Persistencia Local](#persistencia-local)
+8. [Modelo de Dados](#modelo-de-dados)
+9. [UX Mobile](#ux-mobile)
+10. [Roadmap](#roadmap)
+11. [Contribuicao](#contribuicao)
+12. [Checklist de Qualidade](#checklist-de-qualidade)
 
 ## Sobre
 
