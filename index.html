@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acadêmico — Calendário & Tarefas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ===================== OVERLAY MOBILE ===================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+  <!-- ===================== APP SHELL ===================== -->
+  <div class="app-shell" id="appShell">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar" aria-label="Navegação lateral">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="2" y="2" width="7" height="7" rx="1.5" fill="#3b5bdb" />
+              <rect x="11" y="2" width="7" height="7" rx="1.5" fill="#3b5bdb" opacity="0.4" />
+              <rect x="2" y="11" width="7" height="7" rx="1.5" fill="#3b5bdb" opacity="0.4" />
+              <rect x="11" y="11" width="7" height="7" rx="1.5" fill="#3b5bdb" opacity="0.7" />
+            </svg>
+          </div>
+          <span class="brand-name">Acadêmico</span>
+        </div>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M13.5 4.5L4.5 13.5M4.5 4.5L13.5 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidebar-new-btn-wrap">
+        <button class="btn-new-task" id="btnNewTaskSidebar" aria-label="Nova tarefa">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          Nova tarefa
+        </button>
+      </div>
+
+      <div class="sidebar-section sidebar-mobile-views">
+        <span class="sidebar-section-label">Visualização</span>
+        <div class="sidebar-view-toggle" role="group" aria-label="Modo de visualização">
+          <button class="view-btn active" id="btnViewMonthSidebar" data-view="month">Mês</button>
+          <button class="view-btn" id="btnViewWeekSidebar" data-view="week">Semana</button>
+          <button class="view-btn" id="btnViewAgendaSidebar" data-view="agenda">Agenda</button>
+        </div>
+      </div>
+
+      <!-- Mini calendário -->
+      <div class="mini-calendar" id="miniCalendar" aria-label="Mini calendário">
+        <div class="mini-cal-header">
+          <button class="mini-cal-nav" id="miniPrev" aria-label="Mês anterior">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <span class="mini-cal-title" id="miniCalTitle"></span>
+          <button class="mini-cal-nav" id="miniNext" aria-label="Próximo mês">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+        <div class="mini-cal-grid" id="miniCalGrid" role="grid" aria-label="Dias do mês"></div>
+      </div>
+
+      <!-- Tipos/filtro rápido -->
+      <div class="sidebar-section">
+        <span class="sidebar-section-label">Tipos</span>
+        <div class="type-filter-list" id="typeFilterList" role="group" aria-label="Filtrar por tipo">
+          <button class="type-filter-item active" data-type="all">
+            <span class="type-dot" style="background:#3b5bdb"></span>Todos
+          </button>
+          <button class="type-filter-item" data-type="prova">
+            <span class="type-dot" style="background:#ef4444"></span>Provas
+          </button>
+          <button class="type-filter-item" data-type="trabalho">
+            <span class="type-dot" style="background:#f97316"></span>Trabalhos
+          </button>
+          <button class="type-filter-item" data-type="estudo">
+            <span class="type-dot" style="background:#3b82f6"></span>Estudos
+          </button>
+          <button class="type-filter-item" data-type="aula">
+            <span class="type-dot" style="background:#22c55e"></span>Aulas
+          </button>
+          <button class="type-filter-item" data-type="reuniao">
+            <span class="type-dot" style="background:#f59e0b"></span>Reuniões
+          </button>
+          <button class="type-filter-item" data-type="pessoal">
+            <span class="type-dot" style="background:#8b5cf6"></span>Pessoal
+          </button>
+          <button class="type-filter-item" data-type="outro">
+            <span class="type-dot" style="background:#9ca3af"></span>Outro
+          </button>
+        </div>
+      </div>
+
+      <!-- Próximos prazos -->
+      <div class="sidebar-section sidebar-upcoming" id="upcomingSection">
+        <span class="sidebar-section-label">Próximos prazos</span>
+        <div class="upcoming-list" id="upcomingList"></div>
+      </div>
+
+      <!-- Estatísticas da semana -->
+      <div class="sidebar-stats" id="sidebarStats">
+        <span class="sidebar-section-label">Esta semana</span>
+        <div class="stats-row">
+          <div class="stat-box">
+            <span class="stat-num" id="statTotal">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num stat-done" id="statDone">0</span>
+            <span class="stat-label">Feitas</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num stat-pending" id="statPending">0</span>
+            <span class="stat-label">Pendentes</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ===================== MAIN AREA ===================== -->
+    <div class="main-area">
+
+      <!-- TOPBAR -->
+      <header class="topbar" role="banner">
+        <div class="topbar-left">
+          <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="nav-controls">
+            <button class="nav-btn" id="btnPrev" aria-label="Período anterior">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 3L6 8l4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button class="nav-btn today-btn" id="btnToday">Hoje</button>
+            <button class="nav-btn" id="btnNext" aria-label="Próximo período">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 3l4 5-4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <h1 class="topbar-title" id="topbarTitle"></h1>
+        </div>
+        <div class="topbar-right">
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.6" />
+              <path d="M10.5 10.5L13 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            <input type="search" class="search-input" id="searchInput" placeholder="Buscar tarefas..." aria-label="Buscar tarefas" />
+          </div>
+          <div class="view-toggle" role="group" aria-label="Modo de visualização">
+            <button class="view-btn active" id="btnViewMonth" data-view="month">Mês</button>
+            <button class="view-btn" id="btnViewWeek" data-view="week">Semana</button>
+            <button class="view-btn" id="btnViewAgenda" data-view="agenda">Agenda</button>
+          </div>
+          <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Alternar tema escuro">
+            <svg class="icon-moon hidden" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M12.9 11.1A6 6 0 0 1 6.9 2.2a6.5 6.5 0 1 0 8.9 8.9c-.9.3-1.9.3-2.9 0z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <circle cx="9" cy="9" r="3.3" stroke="currentColor" stroke-width="1.7" />
+              <path d="M9 2.2v2M9 13.8v2M2.2 9h2M13.8 9h2M4.2 4.2l1.4 1.4M12.4 12.4l1.4 1.4M13.8 4.2l-1.4 1.4M5.6 12.4l-1.4 1.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="btn-new-task topbar-new-btn" id="btnNewTaskTop" aria-label="Nova tarefa">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M7.5 1.5v12M1.5 7.5h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Nova
+          </button>
+        </div>
+      </header>
+
+      <!-- FILTROS -->
+      <div class="filters-bar" id="filtersBar">
+        <div class="filters-inner">
+          <span class="filters-label">Filtros:</span>
+          <select class="filter-select" id="filterPriority" aria-label="Filtrar por prioridade">
+            <option value="all">Prioridade</option>
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+          <select class="filter-select" id="filterStatus" aria-label="Filtrar por status">
+            <option value="all">Status</option>
+            <option value="pendente">Pendente</option>
+            <option value="concluida">Concluída</option>
+          </select>
+          <select class="filter-select" id="filterDiscipline" aria-label="Filtrar por disciplina">
+            <option value="all">Disciplina</option>
+          </select>
+          <button class="filter-clear-btn" id="filterClearBtn" aria-label="Limpar filtros">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M11 3L3 11M3 3l8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            Limpar
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO DO CALENDÁRIO -->
+      <div class="content-area">
+        <div class="calendar-panel" id="calendarPanel">
+
+          <!-- VIEW: MÊS -->
+          <div class="calendar-month" id="calendarMonth" role="grid" aria-label="Calendário mensal">
+            <div class="month-weekdays" id="monthWeekdays" role="row"></div>
+            <div class="month-grid" id="monthGrid"></div>
+          </div>
+
+          <!-- VIEW: SEMANA -->
+          <div class="calendar-week hidden" id="calendarWeek" aria-label="Calendário semanal">
+            <div class="week-header" id="weekHeader"></div>
+            <div class="week-body" id="weekBody"></div>
+          </div>
+
+          <!-- VIEW: AGENDA -->
+          <div class="calendar-agenda hidden" id="calendarAgenda" aria-label="Visualização agenda">
+            <div class="agenda-list" id="agendaList"></div>
+          </div>
+
+        </div>
+
+        <!-- PAINEL DO DIA -->
+        <aside class="day-panel" id="dayPanel" aria-label="Painel do dia selecionado">
+          <div class="day-panel-header">
+            <div class="day-panel-date" id="dayPanelDate"></div>
+            <button class="day-panel-add" id="dayPanelAdd" aria-label="Adicionar tarefa neste dia">
+              <svg class="day-panel-add-icon-plus" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M7 1.5v11M1.5 7h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <svg class="day-panel-add-icon-toggle" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M3.5 8.5L7 5l3.5 3.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <div class="day-summary" id="daySummary"></div>
+          <div class="day-tasks-list" id="dayTasksList"></div>
+          <div class="day-empty-state hidden" id="dayEmptyState">
+            <div class="empty-icon" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="18" stroke="#e5e7eb" stroke-width="2" />
+                <path d="M14 20h12M20 14v12" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <p class="empty-message">Nenhuma tarefa<br />neste dia</p>
+            <p class="empty-sub">Que tal aproveitar o dia?</p>
+            <button class="btn-empty-add" id="btnEmptyAdd">+ Adicionar tarefa</button>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== FAB MOBILE ===================== -->
+  <button class="fab" id="fabBtn" aria-label="Nova tarefa">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+      <path d="M11 3v16M3 11h16" stroke="white" stroke-width="2.2" stroke-linecap="round" />
+    </svg>
+  </button>
+
+  <!-- ===================== MODAL DE TAREFA ===================== -->
+  <div class="modal-overlay hidden" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Nova tarefa</h2>
+        <button class="modal-close" id="modalClose" aria-label="Fechar modal">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M13.5 4.5L4.5 13.5M4.5 4.5l9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <form class="modal-form" id="taskForm" novalidate>
+        <input type="hidden" id="taskId" />
+
+        <div class="form-group form-full">
+          <label class="form-label" for="taskTitle">Título <span class="required" aria-hidden="true">*</span></label>
+          <input type="text" class="form-input" id="taskTitle" placeholder="Ex.: Prova de Algoritmos..." autocomplete="off" required />
+          <span class="form-error" id="titleError" role="alert"></span>
+        </div>
+
+        <div class="form-group form-full">
+          <label class="form-label" for="taskDescription">Descrição</label>
+          <textarea class="form-textarea" id="taskDescription" placeholder="Detalhes adicionais..." rows="2"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="taskDate">Data <span class="required" aria-hidden="true">*</span></label>
+            <input type="date" class="form-input" id="taskDate" required />
+            <span class="form-error" id="dateError" role="alert"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="taskTime">Horário</label>
+            <input type="time" class="form-input" id="taskTime" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="taskType">Tipo <span class="required" aria-hidden="true">*</span></label>
+            <select class="form-select" id="taskType" required>
+              <option value="prova">🔴 Prova</option>
+              <option value="trabalho">🟠 Trabalho</option>
+              <option value="estudo">🔵 Estudo</option>
+              <option value="aula">🟢 Aula</option>
+              <option value="reuniao">🟡 Reunião</option>
+              <option value="pessoal">🟣 Pessoal</option>
+              <option value="outro">⚪ Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="taskPriority">Prioridade</label>
+            <select class="form-select" id="taskPriority">
+              <option value="media">Média</option>
+              <option value="alta">Alta</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group form-full">
+          <label class="form-label" for="taskDiscipline">Disciplina</label>
+          <input type="text" class="form-input" id="taskDiscipline" placeholder="Ex.: Algoritmos, Cálculo, POO..." autocomplete="off" list="disciplineList" />
+          <datalist id="disciplineList"></datalist>
+        </div>
+
+        <div class="form-group form-full recurrence-section" id="recurrenceSection">
+          <label class="form-label" for="taskRecurrence">Recorrência</label>
+          <div class="recurrence-row">
+            <select class="form-select" id="taskRecurrence">
+              <option value="nenhuma">Não repetir</option>
+              <option value="semanal">Repetir semanalmente</option>
+            </select>
+            <div class="recurrence-weeks-wrap hidden" id="recurrenceWeeksWrap">
+              <span class="recurrence-label-inline">por</span>
+              <input
+                type="number"
+                class="form-input recurrence-weeks-input"
+                id="taskRecurrenceSemanas"
+                min="2"
+                max="16"
+                value="4"
+                aria-label="Número de semanas" />
+              <span class="recurrence-label-inline">semanas</span>
+            </div>
+          </div>
+          <p class="recurrence-hint hidden" id="recurrenceHint"></p>
+        </div>
+
+        <div class="form-actions">
+          <div class="form-actions-left">
+            <button type="button" class="btn-delete hidden" id="btnDeleteTask" aria-label="Excluir tarefa">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                <path d="M2.5 4h10M6 4V2.5h3V4M5.5 6.5v5M9.5 6.5v5M3.5 4l.8 8.5h5.4l.8-8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Excluir
+            </button>
+            <button type="button" class="btn-duplicate hidden" id="btnDuplicateTask" aria-label="Duplicar tarefa">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                <rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+                <path d="M3 10V3a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              Duplicar
+            </button>
+          </div>
+          <div class="form-actions-right">
+            <button type="button" class="btn-cancel" id="btnCancel">Cancelar</button>
+            <button type="submit" class="btn-save" id="btnSave">Salvar tarefa</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST ===================== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ===================== CONFIRM MODAL ===================== -->
+  <div class="modal-overlay hidden" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal confirm-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirmTitle">Excluir tarefa</h2>
+      </div>
+      <p class="confirm-text">Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.</p>
+      <div class="confirm-actions">
+        <button class="btn-cancel" id="confirmCancel">Cancelar</button>
+        <button class="btn-confirm-delete" id="confirmDelete">Sim, excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+
+</html>

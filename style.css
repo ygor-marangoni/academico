@@ -1,0 +1,2777 @@
+/* ============================================================
+   ACADÊMICO — Calendário & Tarefas Universitárias
+   Style Guide: Clean, Premium, Minimalista
+   Font: Figtree (Google Fonts)
+   ============================================================ */
+
+/* ============================================================
+   1. RESET & BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family:
+    'Figtree',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background: #f5f5f7;
+  color: #111827;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 0.9375rem;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   2. SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ============================================================
+   3. APP SHELL — LAYOUT PRINCIPAL
+   ============================================================ */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: #f5f5f7;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.content-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  gap: 0;
+}
+
+.calendar-panel {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 1.5rem 1.5rem;
+  min-width: 0;
+}
+
+/* ============================================================
+   4. SIDEBAR
+   ============================================================ */
+.sidebar {
+  width: 248px;
+  min-width: 248px;
+  background: #ffffff;
+  border-right: 1px solid #e9eaec;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+}
+
+.brand-name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-close-btn {
+  display: none;
+  color: #6b7280;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.sidebar-close-btn:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+.sidebar-new-btn-wrap {
+  padding: 1rem 1.25rem 0.5rem;
+}
+
+.btn-new-task {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: #3b5bdb;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 10px;
+  width: 100%;
+  justify-content: center;
+  transition:
+    background 0.18s,
+    transform 0.12s,
+    box-shadow 0.18s;
+  letter-spacing: -0.01em;
+}
+.btn-new-task:hover {
+  background: #2f4fc7;
+
+  transform: translateY(-1px);
+}
+.btn-new-task:active {
+  transform: translateY(0);
+}
+.btn-new-task:focus-visible {
+  outline: 2px solid #3b5bdb;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   5. MINI CALENDÁRIO (SIDEBAR)
+   ============================================================ */
+.mini-calendar {
+  padding: 0.75rem 1.25rem 0;
+}
+
+.mini-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+}
+
+.mini-cal-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: capitalize;
+  letter-spacing: -0.01em;
+}
+
+.mini-cal-nav {
+  color: #9ca3af;
+  padding: 0.25rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.mini-cal-nav:hover {
+  color: #374151;
+  background: #f3f4f6;
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.mini-cal-day-name {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-align: center;
+  padding: 0.25rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mini-cal-day {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: center;
+  padding: 0.3rem 0.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  line-height: 1.4;
+  position: relative;
+}
+.mini-cal-day:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+.mini-cal-day.other-month {
+  color: #d1d5db;
+}
+.mini-cal-day.today {
+  background: #eff3ff;
+  color: #3b5bdb;
+  font-weight: 700;
+}
+.mini-cal-day.selected {
+  background: #3b5bdb;
+  color: white;
+  font-weight: 700;
+}
+.mini-cal-day.has-tasks::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #3b5bdb;
+}
+.mini-cal-day.selected.has-tasks::after {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ============================================================
+   6. SIDEBAR — SEÇÕES
+   ============================================================ */
+.sidebar-section {
+  padding: 1rem 1.25rem 0;
+}
+
+.sidebar-section-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-mobile-views {
+  display: none;
+}
+
+.sidebar-view-toggle {
+  display: flex;
+  background: #f5f5f7;
+  border-radius: 9px;
+  padding: 0.25rem;
+  gap: 0.125rem;
+}
+
+.sidebar-view-toggle .view-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.375rem 0.5rem;
+}
+
+/* Filtro de tipos */
+.type-filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.type-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #6b7280;
+  border-radius: 7px;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  width: 100%;
+  text-align: left;
+}
+.type-filter-item:hover {
+  background: #f9fafb;
+  color: #374151;
+}
+.type-filter-item.active {
+  background: #eff3ff;
+  color: #3b5bdb;
+  font-weight: 600;
+}
+
+.type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   7. SIDEBAR — PRAZOS E STATS
+   ============================================================ */
+.sidebar-upcoming {
+  flex: 1;
+}
+
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 8px;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.upcoming-item:hover {
+  background: #f3f4f6;
+}
+
+.upcoming-item-bar {
+  width: 3px;
+  height: 32px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.upcoming-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.upcoming-item-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.upcoming-item-meta {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 0.125rem;
+}
+
+.upcoming-empty {
+  font-size: 0.8rem;
+  color: #d1d5db;
+  text-align: center;
+  padding: 0.75rem 0;
+}
+
+.sidebar-stats {
+  padding: 1rem 1.25rem 1.5rem;
+  margin-top: auto;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 1rem;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-box {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.625rem 0.5rem;
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #374151;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.stat-num.stat-done {
+  color: #22c55e;
+}
+.stat-num.stat-pending {
+  color: #f97316;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* ============================================================
+   8. TOPBAR
+   ============================================================ */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e9eaec;
+  gap: 1rem;
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.hamburger-btn {
+  display: none;
+  color: #6b7280;
+  padding: 0.375rem;
+  border-radius: 8px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.hamburger-btn:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #f5f5f7;
+  border-radius: 10px;
+  padding: 0.25rem;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.625rem;
+  color: #6b7280;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  min-height: 32px;
+}
+.nav-btn:hover {
+  color: #111827;
+  background: #ffffff;
+}
+
+.today-btn {
+  padding: 0.375rem 0.875rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #374151;
+}
+.today-btn:hover {
+  color: #3b5bdb;
+}
+
+.topbar-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+/* Busca */
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  transition:
+    border-color 0.18s,
+    background 0.18s,
+    box-shadow 0.18s;
+}
+.search-wrap:focus-within {
+  background: #ffffff;
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.05);
+}
+
+.search-icon {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.search-input {
+  border: none;
+  background: none;
+  font-size: 0.875rem;
+  color: #111827;
+  width: 180px;
+  outline: none;
+}
+.search-input::placeholder {
+  color: #9ca3af;
+}
+.search-input:focus {
+  outline: none;
+}
+
+/* Toggle de views */
+.view-toggle {
+  display: flex;
+  background: #f5f5f7;
+  border-radius: 9px;
+  padding: 0.25rem;
+  gap: 0.125rem;
+}
+
+.view-btn {
+  padding: 0.3125rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #9ca3af;
+  border-radius: 7px;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    box-shadow 0.15s;
+}
+.view-btn.active {
+  background: #ffffff;
+  color: #111827;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.view-btn:hover:not(.active) {
+  color: #374151;
+}
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border-radius: 8px;
+  color: #6b7280;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.theme-toggle-btn:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+.topbar-new-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  min-height: 36px;
+}
+
+/* ============================================================
+   9. FILTROS
+   ============================================================ */
+.filters-bar {
+  background: #ffffff;
+  border-bottom: 1px solid #e9eaec;
+  padding: 0.5rem 1.5rem;
+  flex-shrink: 0;
+}
+
+.filters-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.filters-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 0.25rem;
+}
+
+.filter-select {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #374151;
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  appearance: auto;
+}
+.filter-select:focus {
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.09);
+  background: #ffffff;
+}
+
+.filter-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #9ca3af;
+  padding: 0.35rem 0.625rem;
+  border-radius: 8px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.filter-clear-btn:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+/* ============================================================
+   10. CALENDÁRIO MENSAL
+   ============================================================ */
+.calendar-month {
+  padding-top: 1rem;
+}
+
+.month-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.375rem;
+}
+
+.weekday-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-align: center;
+  padding: 0.375rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.month-day {
+  min-height: 108px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 0.5rem;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+}
+.month-day:hover {
+  border-color: #c7d2fe;
+}
+.month-day.other-month {
+  background: #fafafa;
+  opacity: 0.55;
+}
+.month-day.other-month:hover {
+  opacity: 0.8;
+}
+.month-day.today .day-number {
+  background: #3b5bdb;
+  color: white;
+  font-weight: 700;
+}
+.month-day.selected {
+  border-color: #3b5bdb;
+  box-shadow:
+    0 0 0 3px rgba(59, 91, 219, 0.12),
+    0 2px 8px rgba(59, 91, 219, 0.1);
+}
+
+.day-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    color 0.15s;
+  line-height: 1;
+}
+
+.day-tasks-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.task-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.175rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.task-pill-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.task-pill-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-pill.done-pill .task-pill-text {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.tasks-more {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #9ca3af;
+  padding: 0.15rem 0.375rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition:
+    color 0.12s,
+    background 0.12s;
+}
+.tasks-more:hover {
+  color: #3b5bdb;
+  background: #eff3ff;
+}
+
+/* Cores por tipo — pill backgrounds */
+.pill-prova {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.pill-trabalho {
+  background: #fff7ed;
+  color: #ea580c;
+}
+.pill-estudo {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.pill-aula {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.pill-reuniao {
+  background: #fffbeb;
+  color: #d97706;
+}
+.pill-pessoal {
+  background: #faf5ff;
+  color: #7c3aed;
+}
+.pill-outro {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.dot-prova {
+  background: #ef4444;
+}
+.dot-trabalho {
+  background: #f97316;
+}
+.dot-estudo {
+  background: #3b82f6;
+}
+.dot-aula {
+  background: #22c55e;
+}
+.dot-reuniao {
+  background: #f59e0b;
+}
+.dot-pessoal {
+  background: #8b5cf6;
+}
+.dot-outro {
+  background: #9ca3af;
+}
+
+.bar-prova {
+  background: #ef4444;
+}
+.bar-trabalho {
+  background: #f97316;
+}
+.bar-estudo {
+  background: #3b82f6;
+}
+.bar-aula {
+  background: #22c55e;
+}
+.bar-reuniao {
+  background: #f59e0b;
+}
+.bar-pessoal {
+  background: #8b5cf6;
+}
+.bar-outro {
+  background: #9ca3af;
+}
+
+/* ============================================================
+   11. CALENDÁRIO SEMANAL
+   ============================================================ */
+.calendar-week {
+  padding-top: 1rem;
+}
+
+.week-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.week-header-day {
+  text-align: center;
+  padding: 0.5rem 0.375rem;
+  background: #ffffff;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.week-header-day:hover {
+  background: #f5f5f7;
+}
+.week-header-day.today-header {
+  background: #eff3ff;
+}
+.week-header-day.selected-header {
+  background: #3b5bdb;
+}
+.week-header-day.selected-header .week-day-name,
+.week-header-day.selected-header .week-day-num {
+  color: white;
+}
+
+.week-day-name {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.week-day-num {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.week-header-day.today-header .week-day-num {
+  color: #3b5bdb;
+}
+
+.week-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.375rem;
+  align-items: start;
+}
+
+.week-day-col {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 0.625rem;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s;
+}
+.week-day-col:hover {
+  border-color: #e9eaec;
+}
+.week-day-col.today-col {
+  border-color: #c7d2fe;
+  background: #fafbff;
+}
+.week-day-col.selected-col {
+  border-color: #3b5bdb;
+}
+
+.week-task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.35;
+  cursor: pointer;
+  transition:
+    opacity 0.15s,
+    transform 0.12s;
+}
+.week-task-card:hover {
+  transform: translateX(2px);
+  opacity: 0.9;
+}
+
+.week-task-time {
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 32px;
+}
+
+.week-task-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.week-day-empty {
+  font-size: 0.75rem;
+  color: #d1d5db;
+  text-align: center;
+  padding: 0.5rem 0;
+  font-style: italic;
+}
+
+/* ============================================================
+   12. AGENDA VIEW
+   ============================================================ */
+.calendar-agenda {
+  padding-top: 1rem;
+}
+
+.agenda-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.agenda-day-group {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #f3f4f6;
+}
+
+.agenda-day-header {
+  padding: 0.875rem 1.25rem 0.75rem;
+  border-bottom: 1px solid #f9fafb;
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+}
+
+.agenda-day-label {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111827;
+  text-transform: capitalize;
+  letter-spacing: -0.02em;
+}
+.agenda-day-label.today-label {
+  color: #3b5bdb;
+}
+
+.agenda-day-count {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.agenda-day-tasks {
+  padding: 0.5rem 0.75rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.agenda-task-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.agenda-task-row:hover {
+  background: #f9fafb;
+}
+
+.agenda-task-type-bar {
+  width: 3px;
+  height: 36px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.agenda-task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.agenda-task-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.agenda-task-title.done-title {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.agenda-task-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.175rem;
+}
+
+.agenda-meta-chip {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+.agenda-task-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.agenda-task-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.agenda-task-row:hover .agenda-task-actions {
+  opacity: 1;
+}
+
+.agenda-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #9ca3af;
+  font-size: 0.9375rem;
+}
+
+/* ============================================================
+   13. PAINEL DO DIA (ASIDE DIREITO)
+   ============================================================ */
+.day-panel {
+  width: 280px;
+  min-width: 280px;
+  border-left: 1px solid #e9eaec;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.25rem;
+  gap: 0;
+}
+
+.day-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+
+.day-panel-date {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+  text-transform: capitalize;
+  line-height: 1.35;
+}
+
+.day-panel-add {
+  color: #9ca3af;
+  padding: 0.3125rem;
+  border-radius: 7px;
+  background: #f5f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  flex-shrink: 0;
+}
+.day-panel-add-icon-toggle {
+  display: none;
+}
+.day-panel-add:hover {
+  color: #3b5bdb;
+  background: #eff3ff;
+}
+
+.day-summary {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.summary-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.275rem 0.625rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.chip-total {
+  background: #f5f5f7;
+  color: #374151;
+}
+.chip-done {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.chip-pending {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.day-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* TASK CARD no painel do dia */
+.task-card {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 0.75rem;
+  border: 1px solid #f3f4f6;
+  transition:
+    box-shadow 0.15s,
+    transform 0.12s;
+  position: relative;
+  overflow: hidden;
+}
+.task-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+.task-card.card-prova::before {
+  background: #ef4444;
+}
+.task-card.card-trabalho::before {
+  background: #f97316;
+}
+.task-card.card-estudo::before {
+  background: #3b82f6;
+}
+.task-card.card-aula::before {
+  background: #22c55e;
+}
+.task-card.card-reuniao::before {
+  background: #f59e0b;
+}
+.task-card.card-pessoal::before {
+  background: #8b5cf6;
+}
+.task-card.card-outro::before {
+  background: #9ca3af;
+}
+
+.task-card:hover {
+  transform: translateY(-1px);
+}
+
+.task-card.completed {
+  opacity: 0.65;
+}
+
+.task-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+}
+
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  margin-top: 1px;
+  background: #ffffff;
+}
+.task-checkbox:hover {
+  border-color: #3b5bdb;
+}
+.task-checkbox.checked {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+.task-checkbox-icon {
+  display: none;
+}
+.task-checkbox.checked .task-checkbox-icon {
+  display: block;
+}
+
+.task-card-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.35;
+  flex: 1;
+  min-width: 0;
+}
+.task-card.completed .task-card-title {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.recurrence-badge {
+  display: inline-flex;
+  align-items: center;
+  color: #9ca3af;
+  margin-left: 0.125rem;
+}
+
+.task-card-edit-btn {
+  color: #d1d5db;
+  padding: 0.25rem;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  transition:
+    color 0.12s,
+    background 0.12s;
+  flex-shrink: 0;
+}
+.task-card-edit-btn:hover {
+  color: #3b5bdb;
+  background: #eff3ff;
+}
+
+.task-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  margin-left: 1.625rem;
+}
+
+.task-meta-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+.badge-prova {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.badge-trabalho {
+  background: #fff7ed;
+  color: #ea580c;
+}
+.badge-estudo {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.badge-aula {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+.badge-reuniao {
+  background: #fffbeb;
+  color: #d97706;
+}
+.badge-pessoal {
+  background: #faf5ff;
+  color: #7c3aed;
+}
+.badge-outro {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.task-priority-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+.priority-alta {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.priority-media {
+  background: #fffbeb;
+  color: #d97706;
+}
+.priority-baixa {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.task-time-badge {
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.task-discipline-tag {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 500;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   14. EMPTY STATES
+   ============================================================ */
+.day-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.empty-icon {
+  margin-bottom: 0.25rem;
+}
+
+.empty-message {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.empty-sub {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+}
+
+.btn-empty-add {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.125rem;
+  background: #3b5bdb;
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition:
+    background 0.15s,
+    transform 0.12s;
+}
+.btn-empty-add:hover {
+  background: #2f4fc7;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   15. MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(3px);
+  animation: overlayIn 0.2s ease;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 520px;
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.18),
+    0 8px 20px rgba(0, 0, 0, 0.08);
+  animation: modalIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.025em;
+}
+
+.modal-close {
+  color: #9ca3af;
+  padding: 0.35rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.modal-close:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+/* ============================================================
+   16. FORMULÁRIO
+   ============================================================ */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: -0.01em;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 9px;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  color: #111827;
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+  width: 100%;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #3b5bdb;
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.1);
+}
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #c4c9d4;
+}
+.form-input.error,
+.form-select.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
+}
+
+.form-error {
+  font-size: 0.75rem;
+  color: #ef4444;
+  font-weight: 500;
+  min-height: 1rem;
+  line-height: 1;
+}
+
+/* 16b. RECORRÊNCIA */
+.recurrence-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.recurrence-row .form-select {
+  flex: 1;
+  min-width: 180px;
+}
+
+.recurrence-weeks-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recurrence-weeks-input {
+  width: 64px;
+  text-align: center;
+  padding: 0.625rem 0.5rem;
+}
+
+.recurrence-label-inline {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.recurrence-hint {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 0.375rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+body.dark-mode .recurrence-label-inline {
+  color: #8b92a5;
+}
+
+body.dark-mode .recurrence-hint {
+  color: #555d70;
+}
+
+/* Ações do formulário */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.375rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.form-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.btn-cancel {
+  padding: 0.5625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  border-radius: 9px;
+  background: #f5f5f7;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.btn-cancel:hover {
+  color: #374151;
+  background: #e9eaec;
+}
+
+.btn-save {
+  padding: 0.5625rem 1.375rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  background: #3b5bdb;
+  border-radius: 9px;
+  transition:
+    background 0.15s,
+    transform 0.12s,
+    box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(59, 91, 219, 0.3);
+  letter-spacing: -0.01em;
+}
+.btn-save:hover {
+  background: #2f4fc7;
+
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #ef4444;
+  background: #fef2f2;
+  border-radius: 9px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.btn-delete:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-duplicate {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f5f5f7;
+  border-radius: 9px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.btn-duplicate:hover {
+  background: #e9eaec;
+  color: #374151;
+}
+
+/* Confirm modal */
+.confirm-modal {
+  max-width: 380px;
+}
+.confirm-text {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+}
+.btn-confirm-delete {
+  padding: 0.5625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  background: #ef4444;
+  border-radius: 9px;
+  transition:
+    background 0.15s,
+    transform 0.12s;
+}
+.btn-confirm-delete:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   17. TOAST / NOTIFICAÇÕES
+   ============================================================ */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: #111827;
+  color: #ffffff;
+  padding: 0.75rem 1.125rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  animation: toastIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 320px;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast.toast-exit {
+  animation: toastOut 0.22s ease forwards;
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+}
+
+.toast-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toast-icon svg {
+  display: block;
+}
+.toast-success .toast-icon {
+  background: #22c55e;
+}
+.toast-error .toast-icon {
+  background: #ef4444;
+}
+.toast-info .toast-icon {
+  background: #3b5bdb;
+}
+
+/* ============================================================
+   18. FAB MOBILE
+   ============================================================ */
+.fab {
+  display: none;
+  position: fixed;
+  bottom: 4.2rem;
+  right: 1rem;
+  width: 56px;
+  height: 56px;
+  background: #3b5bdb;
+  color: white;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+  z-index: 900;
+}
+.fab:hover {
+  background: #2f4fc7;
+  transform: scale(1.06);
+}
+.fab:active {
+  transform: scale(0.96);
+}
+
+/* ============================================================
+   19. SIDEBAR OVERLAY (MOBILE)
+   ============================================================ */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 99;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.active {
+  display: block;
+  animation: overlayIn 0.2s ease;
+}
+
+/* ============================================================
+   20. FOCUS VISIBLE
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid #3b5bdb;
+  outline-offset: 2px;
+}
+button:focus-visible {
+  outline: 2px solid #3b5bdb;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.month-day:focus-visible {
+  outline: 2px solid #3b5bdb;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   21. ANIMAÇÕES DE TRANSIÇÃO DE VIEW
+   ============================================================ */
+.calendar-month,
+.calendar-week,
+.calendar-agenda {
+  animation: viewFadeIn 0.2s ease;
+}
+
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   24. UTILITÁRIOS
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   25. TEMA ESCURO
+   ============================================================ */
+body.dark-mode {
+  background: #0f1117;
+  color: #f0f2f7;
+}
+
+body.dark-mode .app-shell {
+  background: #0f1117;
+}
+
+body.dark-mode .sidebar,
+body.dark-mode .topbar,
+body.dark-mode .filters-bar,
+body.dark-mode .day-panel {
+  background: #171b24;
+  border-color: #2a2f3d;
+}
+
+body.dark-mode .sidebar-stats {
+  border-top-color: #252a38;
+}
+
+body.dark-mode .month-day,
+body.dark-mode .week-header-day,
+body.dark-mode .week-day-col,
+body.dark-mode .agenda-day-group,
+body.dark-mode .task-card,
+body.dark-mode .modal {
+  background: #1e2330;
+}
+
+body.dark-mode .month-day,
+body.dark-mode .week-day-col,
+body.dark-mode .agenda-day-group,
+body.dark-mode .task-card {
+  border-color: #2a2f3d;
+}
+
+body.dark-mode .month-day.other-month {
+  background: #171b24;
+  opacity: 0.7;
+}
+
+body.dark-mode .agenda-day-header,
+body.dark-mode .task-card,
+body.dark-mode .week-day-col:hover {
+  border-color: #252a38;
+}
+
+body.dark-mode .agenda-day-header {
+  border-bottom-color: #252a38;
+}
+
+body.dark-mode .brand-name,
+body.dark-mode .topbar-title,
+body.dark-mode .day-panel-date,
+body.dark-mode .agenda-day-label,
+body.dark-mode .agenda-task-title,
+body.dark-mode .task-card-title,
+body.dark-mode .upcoming-item-title,
+body.dark-mode .modal-title,
+body.dark-mode .week-day-num {
+  color: #f0f2f7;
+}
+
+body.dark-mode .sidebar-close-btn,
+body.dark-mode .hamburger-btn,
+body.dark-mode .nav-btn,
+body.dark-mode .theme-toggle-btn,
+body.dark-mode .filter-clear-btn,
+body.dark-mode .day-panel-add,
+body.dark-mode .modal-close,
+body.dark-mode .btn-cancel,
+body.dark-mode .btn-duplicate {
+  color: #8b92a5;
+}
+
+body.dark-mode .sidebar-section-label,
+body.dark-mode .mini-cal-day-name,
+body.dark-mode .weekday-header,
+body.dark-mode .filters-label,
+body.dark-mode .agenda-day-count,
+body.dark-mode .task-time-badge,
+body.dark-mode .upcoming-item-meta,
+body.dark-mode .stat-label,
+body.dark-mode .empty-sub,
+body.dark-mode .tasks-more,
+body.dark-mode .week-task-time {
+  color: #555d70;
+}
+
+body.dark-mode .task-card.completed .task-card-title,
+body.dark-mode .agenda-task-title.done-title,
+body.dark-mode .week-day-empty,
+body.dark-mode .agenda-empty,
+body.dark-mode .upcoming-empty {
+  color: #555d70;
+}
+
+body.dark-mode .search-wrap,
+body.dark-mode .nav-controls,
+body.dark-mode .view-toggle,
+body.dark-mode .sidebar-view-toggle,
+body.dark-mode .filter-select,
+body.dark-mode .day-panel-add,
+body.dark-mode .chip-total,
+body.dark-mode .btn-cancel,
+body.dark-mode .btn-duplicate,
+body.dark-mode .task-discipline-tag {
+  background: #252a38;
+}
+
+body.dark-mode .search-wrap {
+  border-color: transparent;
+}
+
+body.dark-mode .search-wrap:focus-within {
+  border-color: #4c6ef5;
+  box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.15);
+  background: #252a38;
+}
+
+body.dark-mode .search-icon,
+body.dark-mode .search-input::placeholder,
+body.dark-mode .view-btn,
+body.dark-mode .task-card-edit-btn,
+body.dark-mode .agenda-task-time,
+body.dark-mode .task-discipline-tag {
+  color: #8b92a5;
+}
+
+body.dark-mode .search-input {
+  color: #f0f2f7;
+}
+
+body.dark-mode .view-btn.active {
+  background: #1e2330;
+  color: #f0f2f7;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .view-btn:hover:not(.active),
+body.dark-mode .nav-btn:hover,
+body.dark-mode .theme-toggle-btn:hover,
+body.dark-mode .sidebar-close-btn:hover,
+body.dark-mode .hamburger-btn:hover,
+body.dark-mode .modal-close:hover,
+body.dark-mode .btn-cancel:hover,
+body.dark-mode .btn-duplicate:hover,
+body.dark-mode .day-panel-add:hover,
+body.dark-mode .agenda-task-row:hover,
+body.dark-mode .upcoming-item:hover {
+  background: #252a38;
+  color: #f0f2f7;
+}
+
+body.dark-mode .type-filter-item {
+  color: #8b92a5;
+}
+
+body.dark-mode .type-filter-item:hover {
+  background: #1e2330;
+  color: #f0f2f7;
+}
+
+body.dark-mode .type-filter-item.active {
+  background: rgba(76, 110, 245, 0.15);
+  color: #4c6ef5;
+}
+
+body.dark-mode .tasks-more:hover {
+  color: #4c6ef5;
+  background: rgba(76, 110, 245, 0.15);
+}
+
+body.dark-mode .month-day.today .day-number,
+body.dark-mode .week-header-day.selected-header,
+body.dark-mode .mini-cal-day.selected,
+body.dark-mode .btn-new-task,
+body.dark-mode .btn-empty-add,
+body.dark-mode .btn-save,
+body.dark-mode .fab {
+  background: #4c6ef5;
+}
+
+body.dark-mode .week-header-day.today-header,
+body.dark-mode .day-panel-add:hover,
+body.dark-mode .mini-cal-day.today {
+  background: rgba(76, 110, 245, 0.2);
+  color: #4c6ef5;
+}
+
+body.dark-mode .month-day.selected {
+  border-color: #4c6ef5;
+  box-shadow:
+    0 0 0 3px rgba(76, 110, 245, 0.2),
+    0 2px 8px rgba(76, 110, 245, 0.18);
+}
+
+body.dark-mode .week-day-col.today-col {
+  border-color: rgba(76, 110, 245, 0.45);
+  background: #1e2330;
+}
+
+body.dark-mode .week-day-col.selected-col {
+  border-color: #4c6ef5;
+}
+
+body.dark-mode .mini-cal-title,
+body.dark-mode .mini-cal-day,
+body.dark-mode .day-number {
+  color: #8b92a5;
+}
+
+body.dark-mode .mini-cal-day:hover {
+  background: #252a38;
+  color: #f0f2f7;
+}
+
+body.dark-mode .mini-cal-day.today {
+  background: rgba(76, 110, 245, 0.2);
+  color: #4c6ef5;
+}
+
+body.dark-mode .mini-cal-day.selected {
+  background: #4c6ef5;
+  color: white;
+}
+
+body.dark-mode .mini-cal-day.other-month {
+  color: #3a4155;
+}
+
+body.dark-mode .mini-cal-day.has-tasks::after {
+  background: #4c6ef5;
+}
+
+body.dark-mode .mini-cal-day.selected.has-tasks::after {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+body.dark-mode .upcoming-item,
+body.dark-mode .stat-box {
+  background: #252a38;
+}
+
+body.dark-mode .stat-num {
+  color: #f0f2f7;
+}
+
+body.dark-mode .summary-chip {
+  background: #252a38;
+  color: #8b92a5;
+}
+
+body.dark-mode .chip-done {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+body.dark-mode .chip-pending {
+  background: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+}
+
+body.dark-mode .task-checkbox {
+  background: #1e2330;
+  border-color: #555d70;
+}
+
+body.dark-mode .task-checkbox:hover {
+  border-color: #4c6ef5;
+}
+
+body.dark-mode .task-checkbox.checked {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+body.dark-mode .task-card-edit-btn:hover {
+  color: #4c6ef5;
+  background: rgba(76, 110, 245, 0.15);
+}
+
+body.dark-mode .task-discipline-tag {
+  color: #8b92a5;
+}
+
+body.dark-mode .filter-select,
+body.dark-mode .form-input,
+body.dark-mode .form-select,
+body.dark-mode .form-textarea {
+  border-color: #2a2f3d;
+  background: #252a38;
+  color: #f0f2f7;
+}
+
+body.dark-mode .filter-select:focus,
+body.dark-mode .form-input:focus,
+body.dark-mode .form-select:focus,
+body.dark-mode .form-textarea:focus {
+  border-color: #4c6ef5;
+  box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.15);
+}
+
+body.dark-mode .form-input::placeholder,
+body.dark-mode .form-textarea::placeholder {
+  color: #555d70;
+}
+
+body.dark-mode .form-label,
+body.dark-mode .confirm-text,
+body.dark-mode .empty-message {
+  color: #8b92a5;
+}
+
+body.dark-mode .btn-save {
+  background: #4c6ef5;
+  box-shadow: 0 2px 8px rgba(76, 110, 245, 0.35);
+}
+
+body.dark-mode .btn-save:hover,
+body.dark-mode .btn-new-task:hover,
+body.dark-mode .btn-empty-add:hover,
+body.dark-mode .fab:hover {
+  background: #3b5bdb;
+}
+
+body.dark-mode .btn-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+body.dark-mode .btn-delete:hover {
+  background: rgba(239, 68, 68, 0.22);
+  color: #fca5a5;
+}
+
+body.dark-mode .btn-confirm-delete {
+  background: #ef4444;
+}
+
+body.dark-mode .btn-confirm-delete:hover {
+  background: #dc2626;
+}
+
+body.dark-mode .filter-clear-btn:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.16);
+}
+
+body.dark-mode .modal {
+  background: #1e2330;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .modal-overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+body.dark-mode .toast {
+  background: #f0f2f7;
+  color: #111827;
+}
+
+body.dark-mode .toast-info .toast-icon {
+  background: #4c6ef5;
+}
+
+body.dark-mode .pill-prova,
+body.dark-mode .badge-prova {
+  background: rgba(239, 68, 68, 0.13);
+  color: #f87171;
+}
+
+body.dark-mode .pill-trabalho,
+body.dark-mode .badge-trabalho {
+  background: rgba(249, 115, 22, 0.14);
+  color: #fb923c;
+}
+
+body.dark-mode .pill-estudo,
+body.dark-mode .badge-estudo {
+  background: rgba(59, 130, 246, 0.14);
+  color: #60a5fa;
+}
+
+body.dark-mode .pill-aula,
+body.dark-mode .badge-aula {
+  background: rgba(34, 197, 94, 0.13);
+  color: #4ade80;
+}
+
+body.dark-mode .pill-reuniao,
+body.dark-mode .badge-reuniao {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+}
+
+body.dark-mode .pill-pessoal,
+body.dark-mode .badge-pessoal {
+  background: rgba(139, 92, 246, 0.14);
+  color: #a78bfa;
+}
+
+body.dark-mode .pill-outro,
+body.dark-mode .badge-outro {
+  background: rgba(156, 163, 175, 0.14);
+  color: #cbd5e1;
+}
+
+body.dark-mode .priority-alta {
+  background: rgba(239, 68, 68, 0.13);
+  color: #f87171;
+}
+
+body.dark-mode .priority-media {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+}
+
+body.dark-mode .priority-baixa {
+  background: rgba(34, 197, 94, 0.13);
+  color: #4ade80;
+}
+
+body.dark-mode .recurrence-badge {
+  color: #555d70;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: #2a2f3d;
+}
+
+body.dark-mode :focus-visible {
+  outline-color: #4c6ef5;
+}
+
+/* ============================================================
+   22. RESPONSIVIDADE — TABLET (768px – 1199px)
+   ============================================================ */
+@media (max-width: 1199px) {
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+  }
+
+  .day-panel {
+    width: 252px;
+    min-width: 252px;
+  }
+
+  .search-input {
+    width: 140px;
+  }
+
+  .month-day {
+    min-height: 90px;
+  }
+}
+
+/* ============================================================
+   23. RESPONSIVIDADE — MOBILE (< 768px)
+   ============================================================ */
+@media (max-width: 767px) {
+  /* Sidebar como drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 272px;
+    min-width: 272px;
+    transform: translateX(-100%);
+    z-index: 200;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    animation: drawerIn 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes drawerIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+  }
+
+  .sidebar-mobile-views {
+    display: block;
+  }
+
+  /* Topbar mobile */
+  .topbar {
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .topbar-title {
+    font-size: 0.9375rem;
+  }
+
+  .search-wrap {
+    display: none;
+  }
+
+  .view-toggle {
+    display: none;
+  }
+
+  .topbar-new-btn {
+    display: none;
+  }
+
+  .topbar-right {
+    gap: 0.375rem;
+  }
+
+  /* Filtros */
+  .filters-bar {
+    padding: 0.5rem 1rem;
+    overflow-x: auto;
+  }
+  .filters-inner {
+    flex-wrap: nowrap;
+    min-width: max-content;
+  }
+
+  /* Layout principal */
+  .content-area {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .calendar-panel {
+    padding: 0 0.75rem 1rem;
+  }
+
+  /* Calendário mensal */
+  .month-day {
+    min-height: 64px;
+    padding: 0.375rem;
+    border-radius: 8px;
+  }
+
+  .day-number {
+    font-size: 0.75rem;
+    width: 22px;
+    height: 22px;
+  }
+
+  .task-pill {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.25rem;
+    border-radius: 3px;
+  }
+
+  /* Painel do dia vira seção inferior */
+  .day-panel {
+    width: 100%;
+    min-width: unset;
+    border-left: none;
+    border-top: 1px solid #e9eaec;
+    padding: 1rem;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .day-panel-add-icon-plus {
+    display: none;
+  }
+
+  .day-panel-add-icon-toggle {
+    display: block;
+    transform: rotate(180deg);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .day-panel-add {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0.5rem;
+    border-radius: 9px;
+  }
+
+  .day-panel.collapsed-mobile {
+    padding: 0.625rem 1rem;
+    overflow: hidden;
+  }
+
+  .day-panel.collapsed-mobile .day-panel-header {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .day-panel.collapsed-mobile .day-summary,
+  .day-panel.collapsed-mobile .day-tasks-list,
+  .day-panel.collapsed-mobile .day-empty-state {
+    display: none !important;
+  }
+
+  .day-panel.collapsed-mobile .day-panel-add-icon-toggle {
+    transform: rotate(0deg);
+  }
+
+  body.dark-mode .day-panel {
+    border-top-color: #2a2f3d;
+  }
+
+  /* Semana em scroll horizontal */
+  .calendar-week {
+    overflow-x: auto;
+  }
+  .week-header,
+  .week-body {
+    min-width: 640px;
+  }
+
+  /* FAB */
+  .fab {
+    display: none;
+  }
+
+  body.day-panel-collapsed-mobile .fab {
+    display: flex;
+  }
+
+  /* Modal fullscreen */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    border-radius: 18px 18px 0 0;
+    max-width: 100%;
+    max-height: 92vh;
+  }
+
+  @keyframes modalIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .form-actions-left,
+  .form-actions-right {
+    justify-content: stretch;
+    width: 100%;
+    margin-left: 0;
+  }
+  .form-actions-right {
+    flex-direction: row-reverse;
+  }
+  .btn-save,
+  .btn-cancel {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Toast */
+  .toast-container {
+    top: 3.65rem;
+    right: 1.75rem;
+    left: 1.75rem;
+    align-items: stretch;
+  }
+  .toast {
+    max-width: 100%;
+  }
+}
