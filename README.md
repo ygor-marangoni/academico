@@ -1,87 +1,65 @@
-﻿# Acadêmico - Calendário & Tarefas
+# Acadêmico
 
 [![Status](https://img.shields.io/badge/status-ativo-3b5bdb)](./README.md)
-[![Stack](https://img.shields.io/badge/stack-HTML%20%7C%20CSS%20%7C%20Vanilla%20JS-111827)](./README.md)
-[![Responsivo](https://img.shields.io/badge/responsivo-desktop%20%7C%20tablet%20%7C%20mobile-22c55e)](./README.md)
+[![Frontend](https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-111827)](./README.md)
+[![Backend](https://img.shields.io/badge/backend-Node%20%7C%20Express-2563eb)](./README.md)
+[![Banco](https://img.shields.io/badge/banco-MongoDB%20Atlas-22c55e)](./README.md)
 
-Aplicação web para organização acadêmica com calendário interativo, painel de tarefas, filtros, tema escuro e recorrência semanal.
+Aplicação web para organização acadêmica com calendário interativo, tarefas, filtros, tema escuro, recorrência semanal e autenticação com email/senha ou Google.
 
-> Projeto sem framework, sem build e sem dependências externas.  
-> Basta abrir `index.html` no navegador.
+## Stack
 
-## Demo e Preview
+- Frontend estático em HTML, CSS e JavaScript puro
+- Backend em Node.js + Express
+- Banco de dados MongoDB Atlas
+- Autenticação por email/senha com JWT em cookie HTTP-only
+- Login com Google OAuth 2.0
 
-- Aplicação online: https://cronograma-academico.netlify.app/
-
-![Screenshot do sistema Acadêmico](assets/images/aplicacao.png)
-
-## Sumário
-
-1. [Demo e Preview](#demo-e-preview)
-2. [Sobre](#sobre)
-3. [Destaques](#destaques)
-4. [Arquitetura](#arquitetura)
-5. [Estrutura do Projeto](#estrutura-do-projeto)
-6. [Como Executar](#como-executar)
-7. [Persistência Local](#persistência-local)
-8. [Modelo de Dados](#modelo-de-dados)
-9. [UX Mobile](#ux-mobile)
-10. [Roadmap](#roadmap)
-11. [Contribuição](#contribuição)
-12. [Checklist de Qualidade](#checklist-de-qualidade)
-
-## Sobre
-
-O Acadêmico foi desenhado para centralizar a rotina de estudos em uma interface limpa, rápida e direta:
+## O que o projeto já faz
 
 - Visualização por Mês, Semana e Agenda
-- Cadastro e acompanhamento de tarefas por tipo, prioridade e status
-- Busca textual e filtros compostos
-- Persistência local com `localStorage`
+- CRUD de tarefas
+- Busca e filtros por tipo, disciplina, prioridade e status
+- Tema claro/escuro com persistência
+- Recorrência semanal
+- Uso sem login com `localStorage`
+- Uso com login com sincronização em nuvem
+- Importação de tarefas locais para a conta
+- Tela de autenticação separada em `auth.html`
 
-## Destaques
-
-- Tema claro/escuro com suporte à preferência do sistema (`prefers-color-scheme`)
-- Recorrência semanal para criar múltiplas ocorrências em lote
-- Indicador de tarefa recorrente nos cards de Agenda e Painel do Dia
-- Painel do dia adaptado para mobile com estado expandido/minimizado
-- FAB contextual no mobile (aparece no estado minimizado do painel)
-- Acessibilidade com `aria-label`, foco visível e navegação por teclado
-
-## Arquitetura
-
-O JavaScript segue a organização:
-
-1. `state`
-2. `utils`
-3. `render`
-4. `handlers`
-5. `storage`
-6. `init`
-
-Benefícios:
-
-- Separação clara de responsabilidades
-- Evolução incremental sem acoplamento desnecessário
-- Leitura rápida para manutenção e debug
-
-## Estrutura do Projeto
+## Estrutura do projeto
 
 ```text
-CRONOGRAMA/
+academico/
 |- index.html
+|- auth.html
 |- style.css
 |- script.js
-`- README.md
+|- auth.js
+|- config.js
+|- README.md
+|- SETUP_DEPLOY.md
+|- render.yaml
+`- server/
+   |- package.json
+   |- .env.example
+   `- src/
+      |- server.js
+      |- app.js
+      |- config/
+      |- controllers/
+      |- middlewares/
+      |- models/
+      |- routes/
+      |- services/
+      `- utils/
 ```
 
-## Como Executar
+## Como rodar localmente
 
-### Opção 1 - direto no navegador
+### 1. Frontend
 
-1. Abra o arquivo `index.html`.
-
-### Opção 2 - servidor local (recomendado)
+Na raiz do projeto:
 
 ```bash
 python -m http.server 5500
@@ -93,95 +71,70 @@ Abra:
 http://localhost:5500
 ```
 
-## Persistência Local
+### 2. Backend
 
-Chaves utilizadas no `localStorage`:
+Entre em `server/`, copie `.env.example` para `.env`, preencha as variáveis e rode:
 
-- `academico_calendar_tasks`
-- `academico_theme`
-
-Para resetar os dados:
-
-1. Abra DevTools
-2. Vá em `Application` > `Local Storage`
-3. Remova as chaves acima
-
-## Modelo de Dados
-
-Estrutura principal de tarefa:
-
-```json
-{
-  "id": "string",
-  "titulo": "string",
-  "descricao": "string",
-  "data": "YYYY-MM-DD",
-  "hora": "HH:mm",
-  "tipo": "prova|trabalho|estudo|aula|reuniao|pessoal|outro",
-  "prioridade": "alta|media|baixa",
-  "status": "pendente|concluida",
-  "disciplina": "string",
-  "recorrencia": "nenhuma|semanal",
-  "recorrenciaSemanas": 4,
-  "recurrenceGroupId": "string|null",
-  "createdAt": "ISO string",
-  "updatedAt": "ISO string"
-}
+```bash
+npm install
+npm run dev
 ```
 
-## UX Mobile
+API local:
 
-Comportamentos específicos para telas pequenas:
+```text
+http://localhost:3000
+```
 
-- Sidebar em drawer
-- Toggle de visualização na sidebar
-- Painel do dia com controle de minimizar/expandir
-- FAB condicionado ao estado minimizado do painel
-- Modal em formato bottom sheet
+Health check:
 
-## Roadmap
+```text
+http://localhost:3000/health
+```
 
-### Entregue
+## Variáveis importantes do backend
 
-- [x] Calendário mensal/semanal/agenda
-- [x] CRUD de tarefas completo
-- [x] Filtros e busca
-- [x] Tema escuro com persistência
-- [x] Recorrência semanal com `recurrenceGroupId`
-- [x] Responsividade desktop/tablet/mobile
+Exemplo em `server/.env.example`:
 
-### Próximas melhorias
+```env
+PORT=3000
+NODE_ENV=development
+CLIENT_URL=http://localhost:5500
+MONGODB_URI=...
+JWT_SECRET=...
+JWT_EXPIRES_IN=7d
+COOKIE_NAME=academico_token
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
+```
 
-- [ ] Edição em lote por grupo de recorrência
-- [ ] Importação/exportação JSON com UI
-- [ ] Drag and drop entre dias no calendário
-- [ ] Notificações de prazo (PWA/local notifications)
-- [ ] Testes automatizados para regras de data e recorrência
+## Fluxo de autenticação
 
-## Contribuição
+- Visitante: usa `localStorage`
+- Usuário logado: usa API + MongoDB
+- Login local: `POST /api/auth/register` e `POST /api/auth/login`
+- Sessão: cookie HTTP-only
+- Google login: `GET /api/auth/google`
+- Sessão atual: `GET /api/auth/me`
+- Logout: `POST /api/auth/logout`
 
-Contribuições são bem-vindas. Fluxo sugerido:
+## Deploy recomendado
 
-1. Crie uma branch
-2. Implemente a mudança com foco em simplicidade
-3. Mantenha padrão visual e arquitetura atual
-4. Valide comportamento em desktop e mobile
-5. Abra PR com descrição objetiva do impacto
+- Frontend: Netlify
+- Backend: Render
+- Banco: MongoDB Atlas
+- Guia completo: [SETUP_DEPLOY.md](/c:/Users/drz/Desktop/Faculdade/IA/trabalho%20pratico/academico/SETUP_DEPLOY.md)
 
-Padrões importantes do projeto:
+## Observações importantes
 
-- Sem frameworks JS/CSS
-- Sem variáveis CSS
-- Sem dependências externas novas
-- Manter a organização por seções no `style.css`
-- Manter arquitetura do `script.js` (`state` -> `utils` -> `render` -> `handlers` -> `storage` -> `init`)
+- O README antigo dizia que o projeto era apenas estático. Isso não é mais verdade.
+- Hoje o projeto já depende de backend para login e sincronização em nuvem.
+- Para uso sem login, o sistema continua funcionando localmente.
 
-## Checklist de Qualidade
+## Próximos passos recomendados
 
-- [x] Sem build step
-- [x] Sem dependência externa de runtime
-- [x] Persistência local funcionando
-- [x] Tema claro/escuro funcional
-- [x] Recorrência semanal funcional
-- [x] Interface responsiva
-- [x] Foco em acessibilidade básica
+- Revisar mensagens e encoding restantes da `index.html` e `script.js`
+- Validar o fluxo completo em produção no Netlify + Render
+- Atualizar o `config.js` com a URL final do backend
+- Rodar checklist completo de auth e CRUD após deploy

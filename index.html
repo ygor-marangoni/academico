@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acadêmico — Calendário & Tarefas</title>
+  <title>Acadêmico - Calendário & Tarefas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -13,13 +13,9 @@
 
 <body>
 
-  <!-- ===================== OVERLAY MOBILE ===================== -->
   <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
-  <!-- ===================== APP SHELL ===================== -->
   <div class="app-shell" id="appShell">
-
-    <!-- ===================== SIDEBAR ===================== -->
     <aside class="sidebar" id="sidebar" aria-label="Navegação lateral">
       <div class="sidebar-header">
         <div class="sidebar-brand">
@@ -58,7 +54,6 @@
         </div>
       </div>
 
-      <!-- Mini calendário -->
       <div class="mini-calendar" id="miniCalendar" aria-label="Mini calendário">
         <div class="mini-cal-header">
           <button class="mini-cal-nav" id="miniPrev" aria-label="Mês anterior">
@@ -76,7 +71,6 @@
         <div class="mini-cal-grid" id="miniCalGrid" role="grid" aria-label="Dias do mês"></div>
       </div>
 
-      <!-- Tipos/filtro rápido -->
       <div class="sidebar-section">
         <span class="sidebar-section-label">Tipos</span>
         <div class="type-filter-list" id="typeFilterList" role="group" aria-label="Filtrar por tipo">
@@ -107,37 +101,44 @@
         </div>
       </div>
 
-      <!-- Próximos prazos -->
       <div class="sidebar-section sidebar-upcoming" id="upcomingSection">
         <span class="sidebar-section-label">Próximos prazos</span>
         <div class="upcoming-list" id="upcomingList"></div>
       </div>
 
-      <!-- Estatísticas da semana -->
-      <div class="sidebar-stats" id="sidebarStats">
-        <span class="sidebar-section-label">Esta semana</span>
-        <div class="stats-row">
-          <div class="stat-box">
-            <span class="stat-num" id="statTotal">0</span>
-            <span class="stat-label">Total</span>
+      <div class="sidebar-account" id="sidebarAccount">
+        <div class="account-guest" id="accountGuest">
+          <div class="account-profile account-profile-guest">
+            <div class="account-avatar" aria-hidden="true">A</div>
+            <div class="account-identity">
+              <div class="account-user-name">Usando sem login</div>
+              <div class="account-user-email">Entre para sincronizar</div>
+            </div>
           </div>
-          <div class="stat-box">
-            <span class="stat-num stat-done" id="statDone">0</span>
-            <span class="stat-label">Feitas</span>
+          <p class="account-copy hidden">
+            Você pode testar todo o sistema sem login. Quando quiser sincronizar seus dados, entre com a sua conta.
+          </p>
+          <div class="account-actions">
+            <a class="account-link-primary" id="sidebarLoginLink" href="auth.html?mode=login">Fazer login</a>
           </div>
-          <div class="stat-box">
-            <span class="stat-num stat-pending" id="statPending">0</span>
-            <span class="stat-label">Pendentes</span>
+        </div>
+
+        <div class="account-member hidden" id="accountMember">
+          <div class="account-profile">
+            <div class="account-avatar" id="sidebarUserAvatar" aria-hidden="true">U</div>
+            <div class="account-identity">
+              <div class="account-user-name" id="sidebarUserName">Usuário</div>
+              <div class="account-user-email" id="sidebarUserEmail">email@exemplo.com</div>
+            </div>
+          </div>
+          <div class="account-actions">
+            <button class="account-link-ghost" id="sidebarLogoutBtn" type="button">Sair</button>
           </div>
         </div>
       </div>
-
     </aside>
 
-    <!-- ===================== MAIN AREA ===================== -->
     <div class="main-area">
-
-      <!-- TOPBAR -->
       <header class="topbar" role="banner">
         <div class="topbar-left">
           <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">
@@ -191,7 +192,6 @@
         </div>
       </header>
 
-      <!-- FILTROS -->
       <div class="filters-bar" id="filtersBar">
         <div class="filters-inner">
           <span class="filters-label">Filtros:</span>
@@ -218,30 +218,23 @@
         </div>
       </div>
 
-      <!-- CONTEÚDO DO CALENDÁRIO -->
       <div class="content-area">
         <div class="calendar-panel" id="calendarPanel">
-
-          <!-- VIEW: MÊS -->
           <div class="calendar-month" id="calendarMonth" role="grid" aria-label="Calendário mensal">
             <div class="month-weekdays" id="monthWeekdays" role="row"></div>
             <div class="month-grid" id="monthGrid"></div>
           </div>
 
-          <!-- VIEW: SEMANA -->
           <div class="calendar-week hidden" id="calendarWeek" aria-label="Calendário semanal">
             <div class="week-header" id="weekHeader"></div>
             <div class="week-body" id="weekBody"></div>
           </div>
 
-          <!-- VIEW: AGENDA -->
           <div class="calendar-agenda hidden" id="calendarAgenda" aria-label="Visualização agenda">
             <div class="agenda-list" id="agendaList"></div>
           </div>
-
         </div>
 
-        <!-- PAINEL DO DIA -->
         <aside class="day-panel" id="dayPanel" aria-label="Painel do dia selecionado">
           <div class="day-panel-header">
             <div class="day-panel-date" id="dayPanelDate"></div>
@@ -269,18 +262,61 @@
           </div>
         </aside>
       </div>
-
     </div>
   </div>
 
-  <!-- ===================== FAB MOBILE ===================== -->
+  <div class="auth-screen hidden" id="authScreen" aria-live="polite">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <p class="auth-eyebrow">Acadêmico Cloud</p>
+        <h2 class="auth-title">Entre para salvar suas tarefas na nuvem</h2>
+        <p class="auth-subtitle">Use email e senha ou continue com Google para sincronizar o seu calendário.</p>
+      </div>
+
+      <div class="auth-tabs" role="tablist" aria-label="Selecionar modo de autenticação">
+        <button class="auth-tab active" id="authTabLogin" data-auth-mode="login" type="button">Entrar</button>
+        <button class="auth-tab" id="authTabRegister" data-auth-mode="register" type="button">Criar conta</button>
+      </div>
+
+      <form class="auth-form" id="authForm" novalidate>
+        <div class="auth-form-row hidden" id="authNameWrap">
+          <label class="form-label" for="authName">Nome</label>
+          <input class="form-input" id="authName" type="text" autocomplete="name" placeholder="Seu nome" />
+        </div>
+
+        <div class="auth-form-row">
+          <label class="form-label" for="authEmail">Email</label>
+          <input class="form-input" id="authEmail" type="email" autocomplete="email" placeholder="voce@email.com" required />
+        </div>
+
+        <div class="auth-form-row">
+          <label class="form-label" for="authPassword">Senha</label>
+          <input class="form-input" id="authPassword" type="password" autocomplete="current-password" placeholder="Mínimo de 6 caracteres" required />
+        </div>
+
+        <p class="auth-error hidden" id="authError" role="alert"></p>
+
+        <button class="btn-save auth-submit-btn" id="authSubmitBtn" type="submit">Entrar</button>
+      </form>
+
+      <div class="auth-divider">
+        <span>ou</span>
+      </div>
+
+      <button class="auth-google-btn" id="btnGoogleLogin" type="button">
+        Continuar com Google
+      </button>
+
+      <p class="auth-footnote" id="authFootnote">Suas tarefas serão vinculadas à sua conta.</p>
+    </div>
+  </div>
+
   <button class="fab" id="fabBtn" aria-label="Nova tarefa">
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
       <path d="M11 3v16M3 11h16" stroke="white" stroke-width="2.2" stroke-linecap="round" />
     </svg>
   </button>
 
-  <!-- ===================== MODAL DE TAREFA ===================== -->
   <div class="modal-overlay hidden" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal" id="modal">
       <div class="modal-header">
@@ -322,13 +358,13 @@
           <div class="form-group">
             <label class="form-label" for="taskType">Tipo <span class="required" aria-hidden="true">*</span></label>
             <select class="form-select" id="taskType" required>
-              <option value="prova">🔴 Prova</option>
-              <option value="trabalho">🟠 Trabalho</option>
-              <option value="estudo">🔵 Estudo</option>
-              <option value="aula">🟢 Aula</option>
-              <option value="reuniao">🟡 Reunião</option>
-              <option value="pessoal">🟣 Pessoal</option>
-              <option value="outro">⚪ Outro</option>
+              <option value="prova">Prova</option>
+              <option value="trabalho">Trabalho</option>
+              <option value="estudo">Estudo</option>
+              <option value="aula">Aula</option>
+              <option value="reuniao">Reunião</option>
+              <option value="pessoal">Pessoal</option>
+              <option value="outro">Outro</option>
             </select>
           </div>
           <div class="form-group">
@@ -395,10 +431,8 @@
     </div>
   </div>
 
-  <!-- ===================== TOAST ===================== -->
   <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- ===================== CONFIRM MODAL ===================== -->
   <div class="modal-overlay hidden" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
     <div class="modal confirm-modal">
       <div class="modal-header">
@@ -412,6 +446,7 @@
     </div>
   </div>
 
+  <script src="config.js"></script>
   <script src="script.js" defer></script>
 </body>
 

@@ -15,6 +15,9 @@ const state = {
   miniCalDate: new Date(), // mês exibido no mini-calendário
   currentView: 'month', // 'month' | 'week' | 'agenda'
   theme: 'system', // 'light' | 'dark' | 'system'
+  user: null,
+  authMode: 'login',
+  authChecked: false,
   dayPanelCollapsedMobile: false,
   filters: {
     type: 'all',
@@ -46,10 +49,28 @@ const sel = {
   btnViewMonth: () => document.getElementById('btnViewMonth'),
   btnViewWeek: () => document.getElementById('btnViewWeek'),
   btnViewAgenda: () => document.getElementById('btnViewAgenda'),
+  authStatus: () => document.getElementById('authStatus'),
+  authUserName: () => document.getElementById('authUserName'),
+  authUserEmail: () => document.getElementById('authUserEmail'),
+  btnLogout: () => document.getElementById('btnLogout'),
   themeToggleBtn: () => document.getElementById('themeToggleBtn'),
   btnNewTaskTop: () => document.getElementById('btnNewTaskTop'),
   btnNewTaskSidebar: () => document.getElementById('btnNewTaskSidebar'),
   fabBtn: () => document.getElementById('fabBtn'),
+
+  // auth
+  authScreen: () => document.getElementById('authScreen'),
+  authForm: () => document.getElementById('authForm'),
+  authTabLogin: () => document.getElementById('authTabLogin'),
+  authTabRegister: () => document.getElementById('authTabRegister'),
+  authNameWrap: () => document.getElementById('authNameWrap'),
+  authName: () => document.getElementById('authName'),
+  authEmail: () => document.getElementById('authEmail'),
+  authPassword: () => document.getElementById('authPassword'),
+  authError: () => document.getElementById('authError'),
+  authSubmitBtn: () => document.getElementById('authSubmitBtn'),
+  btnGoogleLogin: () => document.getElementById('btnGoogleLogin'),
+  authFootnote: () => document.getElementById('authFootnote'),
 
   // filtros
   filterPriority: () => document.getElementById('filterPriority'),
@@ -84,6 +105,13 @@ const sel = {
 
   // sidebar extras
   upcomingList: () => document.getElementById('upcomingList'),
+  sidebarAccount: () => document.getElementById('sidebarAccount'),
+  accountGuest: () => document.getElementById('accountGuest'),
+  accountMember: () => document.getElementById('accountMember'),
+  sidebarUserName: () => document.getElementById('sidebarUserName'),
+  sidebarUserEmail: () => document.getElementById('sidebarUserEmail'),
+  sidebarUserAvatar: () => document.getElementById('sidebarUserAvatar'),
+  sidebarLogoutBtn: () => document.getElementById('sidebarLogoutBtn'),
   statTotal: () => document.getElementById('statTotal'),
   statDone: () => document.getElementById('statDone'),
   statPending: () => document.getElementById('statPending'),
@@ -123,6 +151,13 @@ const sel = {
 
   // toast
   toastContainer: () => document.getElementById('toastContainer'),
+};
+
+const appConfig = {
+  apiBaseUrl: (window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000').replace(
+    /\/$/,
+    '',
+  ),
 };
 
 /* ============================================================
@@ -262,10 +297,17 @@ const storage = {
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
-      return parsed.filter((t) => t && t.id && t.titulo && t.data);
+      return parsed.filter((t) => t && t.titulo && t.data);
     } catch (e) {
       console.warn('Erro ao carregar tarefas do localStorage:', e);
       return [];
+    }
+    if (sel.authStatus()) {
+      sel.authStatus().classList.toggle('hidden', !loggedIn);
+    }
+    if (loggedIn && sel.authUserName() && sel.authUserEmail()) {
+      sel.authUserName().textContent = state.user.name || 'Usuário';
+      sel.authUserEmail().textContent = state.user.email || '';
     }
   },
 
@@ -275,6 +317,10 @@ const storage = {
     } catch (e) {
       console.warn('Erro ao salvar tarefas:', e);
     }
+  },
+
+  clear() {
+    localStorage.removeItem(this.KEY);
   },
 
   exportJSON() {
@@ -289,6 +335,302 @@ const storage = {
     URL.revokeObjectURL(url);
   },
 };
+
+const http = {
+  async request(path, options = {}) {
+    const response = await fetch(`${appConfig.apiBaseUrl}${path}`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
+
+    const isJson = response.headers
+      .get('content-type')
+      ?.includes('application/json');
+    const payload = isJson ? await response.json() : null;
+
+    if (!response.ok) {
+      const error = new Error(payload?.message || 'Falha na comunicação com a API.');
+      error.status = response.status;
+      error.payload = payload;
+      throw error;
+    }
+
+    return payload;
+  },
+};
+
+const api = {
+  auth: {
+    me() {
+      return http.request('/api/auth/me', { method: 'GET' });
+    },
+    register(data) {
+      return http.request('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    login(data) {
+      return http.request('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    logout() {
+      return http.request('/api/auth/logout', { method: 'POST' });
+    },
+    getGoogleAuthUrl() {
+      return `${appConfig.apiBaseUrl}/api/auth/google`;
+    },
+  },
+  tasks: {
+    list() {
+      return http.request('/api/tasks', { method: 'GET' });
+    },
+    create(data) {
+      return http.request('/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    importMany(items) {
+      return http.request('/api/tasks/import', {
+        method: 'POST',
+        body: JSON.stringify({ tasks: items }),
+      });
+    },
+    update(id, data) {
+      return http.request(`/api/tasks/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+    remove(id) {
+      return http.request(`/api/tasks/${id}`, { method: 'DELETE' });
+    },
+  },
+};
+
+const auth = {
+  setMode(mode) {
+    state.authMode = mode;
+    if (!sel.authTabLogin() || !sel.authTabRegister()) return;
+    const isRegister = mode === 'register';
+    sel.authTabLogin().classList.toggle('active', !isRegister);
+    sel.authTabRegister().classList.toggle('active', isRegister);
+    sel.authNameWrap().classList.toggle('hidden', !isRegister);
+    sel.authSubmitBtn().textContent = isRegister ? 'Criar conta' : 'Entrar';
+    sel.authPassword().setAttribute(
+      'autocomplete',
+      isRegister ? 'new-password' : 'current-password',
+    );
+    sel.authFootnote().textContent = isRegister
+      ? 'Crie uma conta para sincronizar os seus dados entre dispositivos.'
+      : 'Suas tarefas serão vinculadas à sua conta.';
+    this.clearError();
+  },
+
+  setUser(user) {
+    state.user = user;
+    this.render();
+  },
+
+  clearUser() {
+    state.user = null;
+    this.render();
+  },
+
+  render() {
+    const loggedIn = Boolean(state.user);
+    if (sel.accountGuest()) {
+      sel.accountGuest().classList.toggle('hidden', loggedIn);
+    }
+    if (sel.accountMember()) {
+      sel.accountMember().classList.toggle('hidden', !loggedIn);
+    }
+
+    if (loggedIn && sel.sidebarUserName() && sel.sidebarUserEmail()) {
+      if (sel.authUserName()) {
+        sel.authUserName().textContent = state.user.name || 'Usuário';
+      }
+      sel.sidebarUserEmail().textContent = state.user.email || '';
+      sel.sidebarUserName().textContent = state.user.name || 'Usuário';
+      if (sel.sidebarUserAvatar()) {
+        const base = (state.user.name || state.user.email || 'U').trim();
+        const initials = base
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((part) => part.charAt(0).toUpperCase())
+          .join('');
+        sel.sidebarUserAvatar().textContent = initials || 'U';
+      }
+    }
+    if (sel.authStatus()) {
+      sel.authStatus().classList.toggle('hidden', !loggedIn);
+    }
+    if (loggedIn && sel.authUserEmail()) {
+      sel.authUserEmail().textContent = state.user.email || '';
+    }
+  },
+
+  showError(message) {
+    const node = sel.authError();
+    if (!node) {
+      showToast(message, 'error');
+      return;
+    }
+    node.textContent = message;
+    node.classList.remove('hidden');
+  },
+
+  clearError() {
+    const node = sel.authError();
+    if (!node) return;
+    node.textContent = '';
+    node.classList.add('hidden');
+  },
+
+  async submit() {
+    const email = sel.authEmail().value.trim();
+    const password = sel.authPassword().value;
+    const name = sel.authName().value.trim();
+
+    if (!email || !password) {
+      this.showError('Preencha email e senha para continuar.');
+      return;
+    }
+
+    if (state.authMode === 'register' && name.length < 2) {
+      this.showError('Informe um nome com pelo menos 2 caracteres.');
+      return;
+    }
+
+    this.clearError();
+    sel.authSubmitBtn().disabled = true;
+    sel.authSubmitBtn().textContent =
+      state.authMode === 'register' ? 'Criando conta...' : 'Entrando...';
+
+    try {
+      const response =
+        state.authMode === 'register'
+          ? await api.auth.register({ name, email, password })
+          : await api.auth.login({ email, password });
+
+      this.setUser(response.user);
+      state.authChecked = true;
+      sel.authForm().reset();
+      await tasks.loadRemote();
+      await maybeImportLegacyTasks();
+      renderAll();
+      showToast(
+        state.authMode === 'register'
+          ? 'Conta criada com sucesso!'
+          : 'Login realizado com sucesso!',
+        'success',
+      );
+    } catch (error) {
+      this.showError(error.message);
+    } finally {
+      sel.authSubmitBtn().disabled = false;
+      this.setMode(state.authMode);
+    }
+  },
+
+  async restoreSession() {
+    try {
+      const response = await api.auth.me();
+      this.setUser(response.user);
+    } catch (error) {
+      this.clearUser();
+      tasks.loadLocal();
+      state.authChecked = true;
+      this.render();
+      return;
+    }
+
+    try {
+      await tasks.loadRemote();
+      await maybeImportLegacyTasks();
+    } catch (error) {
+      console.warn('Falha ao carregar tarefas remotas:', error);
+      showToast('Sessão restaurada, mas houve falha ao carregar as tarefas.', 'info');
+    }
+
+    state.authChecked = true;
+    this.render();
+  },
+
+  async logout() {
+    try {
+      await api.auth.logout();
+    } catch (error) {
+      console.warn('Falha ao encerrar sessão:', error);
+    }
+
+    this.clearUser();
+    tasks.loadLocal();
+    modal.close();
+    confirmModal.close();
+    this.setMode('login');
+    renderAll();
+    showToast('Sessão encerrada.', 'info');
+  },
+
+  handleProviderRedirectStatus() {
+    const url = new URL(window.location.href);
+    const status = url.searchParams.get('auth');
+    if (!status) return;
+
+    url.searchParams.delete('auth');
+    window.history.replaceState({}, '', url.toString());
+
+    if (status === 'success') {
+      showToast('Login com Google concluído!', 'success');
+      return;
+    }
+
+    if (status === 'google-disabled') {
+      this.showError('O login com Google ainda não foi configurado no backend.');
+      return;
+    }
+
+    this.showError('Não foi possível concluir o login com Google.');
+  },
+};
+
+async function maybeImportLegacyTasks() {
+  const legacyTasks = storage.load();
+  if (!state.user || !legacyTasks.length || state.tasks.length > 0) return;
+
+  const shouldImport = window.confirm(
+    'Encontramos tarefas salvas apenas neste navegador. Deseja importá-las para a sua conta?',
+  );
+
+  if (!shouldImport) return;
+
+  const payload = legacyTasks.map((task) => ({
+    titulo: task.titulo,
+    descricao: task.descricao || '',
+    data: task.data,
+    hora: task.hora || '',
+    tipo: task.tipo || 'outro',
+    prioridade: task.prioridade || 'media',
+    status: task.status || 'pendente',
+    disciplina: task.disciplina || '',
+    recorrencia: task.recorrencia || 'nenhuma',
+    recorrenciaSemanas: task.recorrenciaSemanas || null,
+    recurrenceGroupId: task.recurrenceGroupId || null,
+  }));
+
+  const response = await api.tasks.importMany(payload);
+  state.tasks = response.tasks;
+  storage.clear();
+  showToast('Tarefas locais importadas para a nuvem.', 'success');
+}
 
 /* ============================================================
    5b. CONTROLE DE TEMA
@@ -408,16 +750,26 @@ const tasks = {
     return state.tasks.some((t) => t.data === iso);
   },
 
-  create(data) {
-    const task = {
-      id: utils.uid(),
+  loadLocal() {
+    state.tasks = storage.load();
+    return state.tasks;
+  },
+
+  async loadRemote() {
+    const response = await api.tasks.list();
+    state.tasks = response.tasks || [];
+    return state.tasks;
+  },
+
+  async create(data) {
+    const payload = {
       titulo: data.titulo.trim(),
       descricao: data.descricao || '',
       data: data.data,
       hora: data.hora || '',
       tipo: data.tipo || 'outro',
       prioridade: data.prioridade || 'media',
-      status: 'pendente',
+      status: data.status || 'pendente',
       disciplina: data.disciplina || '',
       recorrencia: data.recorrencia || 'nenhuma',
       recorrenciaSemanas:
@@ -428,28 +780,38 @@ const tasks = {
             )
           : null,
       recurrenceGroupId: data.recurrenceGroupId || null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
-    state.tasks.push(task);
-    storage.save(state.tasks);
-    return task;
+
+    if (!state.user) {
+      const task = {
+        ...payload,
+        id: utils.uid(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      state.tasks.push(task);
+      storage.save(state.tasks);
+      return task;
+    }
+
+    const response = await api.tasks.create(payload);
+    state.tasks.push(response.task);
+    return response.task;
   },
 
-  createRecurring(data) {
+  async createRecurring(data) {
     const groupId = utils.uid();
     const baseDate = utils.parseDate(data.data);
     const weeks = Math.min(
       Math.max(parseInt(data.recorrenciaSemanas, 10) || 4, 2),
       16,
     );
-    const created = [];
+    const payload = [];
 
     for (let i = 0; i < weeks; i++) {
       const d = new Date(baseDate);
       d.setDate(baseDate.getDate() + i * 7);
-      const task = {
-        id: utils.uid(),
+      payload.push({
         titulo: data.titulo.trim(),
         descricao: data.descricao || '',
         data: utils.formatISO(d),
@@ -461,55 +823,95 @@ const tasks = {
         recorrencia: i === 0 ? 'semanal' : 'nenhuma',
         recorrenciaSemanas: i === 0 ? weeks : null,
         recurrenceGroupId: groupId,
+      });
+    }
+
+    if (!state.user) {
+      const created = payload.map((item) => ({
+        ...item,
+        id: utils.uid(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
-      state.tasks.push(task);
-      created.push(task);
+      }));
+      state.tasks.push(...created);
+      storage.save(state.tasks);
+      return created;
     }
-    storage.save(state.tasks);
-    return created;
+
+    const response = await api.tasks.importMany(payload);
+    state.tasks.push(...response.tasks);
+    return response.tasks;
   },
 
-  update(id, data) {
+  async update(id, data) {
+    if (!state.user) {
+      const idx = state.tasks.findIndex((t) => t.id === id);
+      if (idx === -1) return null;
+      state.tasks[idx] = {
+        ...state.tasks[idx],
+        ...data,
+        id,
+        updatedAt: new Date().toISOString(),
+      };
+      storage.save(state.tasks);
+      return state.tasks[idx];
+    }
+
+    const response = await api.tasks.update(id, data);
     const idx = state.tasks.findIndex((t) => t.id === id);
-    if (idx === -1) return null;
-    state.tasks[idx] = {
-      ...state.tasks[idx],
-      ...data,
-      id,
-      updatedAt: new Date().toISOString(),
-    };
-    storage.save(state.tasks);
-    return state.tasks[idx];
+    if (idx !== -1) {
+      state.tasks[idx] = response.task;
+    }
+    return response.task;
   },
 
-  toggle(id) {
-    const t = state.tasks.find((t) => t.id === id);
-    if (!t) return;
-    t.status = t.status === 'concluida' ? 'pendente' : 'concluida';
-    t.updatedAt = new Date().toISOString();
-    storage.save(state.tasks);
+  async toggle(id) {
+    const t = state.tasks.find((item) => item.id === id);
+    if (!t) return null;
+
+    const nextStatus = t.status === 'concluida' ? 'pendente' : 'concluida';
+    if (!state.user) {
+      t.status = nextStatus;
+      t.updatedAt = new Date().toISOString();
+      storage.save(state.tasks);
+      return t;
+    }
+
+    const response = await api.tasks.update(id, { status: nextStatus });
+    const idx = state.tasks.findIndex((item) => item.id === id);
+    if (idx !== -1) {
+      state.tasks[idx] = response.task;
+    }
+    return response.task;
   },
 
-  delete(id) {
+  async delete(id) {
+    if (state.user) {
+      await api.tasks.remove(id);
+    }
     state.tasks = state.tasks.filter((t) => t.id !== id);
-    storage.save(state.tasks);
+    if (!state.user) {
+      storage.save(state.tasks);
+    }
   },
 
-  duplicate(id) {
-    const t = state.tasks.find((t) => t.id === id);
-    if (!t) return;
-    const copy = {
-      ...t,
-      id: utils.uid(),
+  async duplicate(id) {
+    const t = state.tasks.find((item) => item.id === id);
+    if (!t) return null;
+
+    return this.create({
+      titulo: t.titulo,
+      descricao: t.descricao,
+      data: t.data,
+      hora: t.hora,
+      tipo: t.tipo,
+      prioridade: t.prioridade,
+      disciplina: t.disciplina,
+      recorrencia: 'nenhuma',
+      recorrenciaSemanas: null,
+      recurrenceGroupId: null,
       status: 'pendente',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    state.tasks.push(copy);
-    storage.save(state.tasks);
-    return copy;
+    });
   },
 
   getDisciplines() {
@@ -989,11 +1391,11 @@ const renderDayPanel = {
 
     // Checkbox toggle
     const checkbox = card.querySelector('.task-checkbox');
-    checkbox.addEventListener('click', () => {
-      tasks.toggle(t.id);
+    checkbox.addEventListener('click', async () => {
+      const updated = await tasks.toggle(t.id);
       renderAll();
       showToast(
-        t.status !== 'concluida'
+        updated?.status === 'concluida'
           ? '✓ Tarefa concluída!'
           : 'Tarefa marcada como pendente',
         'success',
@@ -1047,9 +1449,9 @@ const renderSidebar = {
 
     // Estatísticas da semana
     const stats = tasks.getWeekStats();
-    sel.statTotal().textContent = stats.total;
-    sel.statDone().textContent = stats.done;
-    sel.statPending().textContent = stats.pending;
+    if (sel.statTotal()) sel.statTotal().textContent = stats.total;
+    if (sel.statDone()) sel.statDone().textContent = stats.done;
+    if (sel.statPending()) sel.statPending().textContent = stats.pending;
   },
 };
 
@@ -1241,7 +1643,7 @@ const handlers = {
     setTimeout(() => sel.taskTitle().focus(), 100);
   },
 
-  saveTask(e) {
+  async saveTask(e) {
     e.preventDefault();
     const title = sel.taskTitle().value.trim();
     const date = sel.taskDate().value;
@@ -1285,10 +1687,13 @@ const handlers = {
       16,
     );
 
-    if (!state.editingTaskId && recorrencia === 'semanal') {
+    try {
+      sel.btnSave().disabled = true;
+
+      if (!state.editingTaskId && recorrencia === 'semanal') {
       data.recorrencia = 'semanal';
       data.recorrenciaSemanas = semanas;
-      const created = tasks.createRecurring(data);
+      const created = await tasks.createRecurring(data);
       state.selectedDate = utils.parseDate(data.data);
       modal.close();
       renderAll();
@@ -1300,17 +1705,22 @@ const handlers = {
     }
 
     if (state.editingTaskId) {
-      tasks.update(state.editingTaskId, data);
+      await tasks.update(state.editingTaskId, data);
       showToast('Tarefa atualizada!', 'success');
     } else {
-      tasks.create(data);
+      await tasks.create(data);
       // Seleciona a data da nova tarefa
       state.selectedDate = utils.parseDate(date);
       showToast('Tarefa criada com sucesso!', 'success');
     }
 
-    modal.close();
-    renderAll();
+      modal.close();
+      renderAll();
+    } catch (error) {
+      showToast(error.message, 'error');
+    } finally {
+      sel.btnSave().disabled = false;
+    }
   },
 
   deleteTask() {
@@ -1320,9 +1730,9 @@ const handlers = {
     confirmModal.open();
   },
 
-  confirmDeleteTask() {
+  async confirmDeleteTask() {
     if (state.pendingDeleteId) {
-      tasks.delete(state.pendingDeleteId);
+      await tasks.delete(state.pendingDeleteId);
       state.pendingDeleteId = null;
       showToast('Tarefa excluída.', 'info');
       confirmModal.close();
@@ -1330,9 +1740,9 @@ const handlers = {
     }
   },
 
-  duplicateTask() {
+  async duplicateTask() {
     if (!state.editingTaskId) return;
-    const copy = tasks.duplicate(state.editingTaskId);
+    await tasks.duplicate(state.editingTaskId);
     modal.close();
     showToast('Tarefa duplicada!', 'success');
     renderAll();
@@ -1487,6 +1897,26 @@ function bindEvents() {
   document
     .getElementById('themeToggleBtn')
     .addEventListener('click', () => themeCtrl.toggle());
+  if (sel.authTabLogin() && sel.authTabRegister() && sel.authForm()) {
+    sel.authTabLogin().addEventListener('click', () => auth.setMode('login'));
+    sel.authTabRegister().addEventListener('click', () => auth.setMode('register'));
+    sel.authForm().addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await auth.submit();
+    });
+  }
+
+  if (sel.btnGoogleLogin()) {
+    sel.btnGoogleLogin().addEventListener('click', () => {
+      window.location.href = api.auth.getGoogleAuthUrl();
+    });
+  }
+
+  if (sel.sidebarLogoutBtn()) {
+    sel.sidebarLogoutBtn().addEventListener('click', async () => {
+      await auth.logout();
+    });
+  }
 
   // Mini calendário navegação
   sel.miniPrev().addEventListener('click', () => {
@@ -1677,20 +2107,22 @@ function bindEvents() {
 /* ============================================================
    22. INICIALIZAÇÃO
    ============================================================ */
-function init() {
+async function init() {
   themeCtrl.load();
-
-  // Carregar dados
-  state.tasks = storage.load();
+  auth.setMode('login');
+  auth.handleProviderRedirectStatus();
+  tasks.loadLocal();
 
   // Renderizar estrutura base do mês
   renderMonth.init();
 
+  // Binding
+  bindEvents();
+
   // View inicial
   handlers.setView('month');
 
-  // Binding
-  bindEvents();
+  await auth.restoreSession();
 
   // Render geral
   renderAll();
@@ -1702,4 +2134,9 @@ function init() {
 }
 
 // Aguarda DOM pronto
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+  init().catch((error) => {
+    console.error('Falha ao iniciar aplicação:', error);
+    showToast('Não foi possível iniciar a aplicação.', 'error');
+  });
+});
