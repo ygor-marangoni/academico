@@ -154,7 +154,7 @@ const sel = {
 };
 
 const appConfig = {
-  apiBaseUrl: (window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000').replace(
+  apiBaseUrl: (window.APP_CONFIG?.API_BASE_URL ?? 'http://localhost:3000').replace(
     /\/$/,
     '',
   ),
